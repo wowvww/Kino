@@ -1,5 +1,5 @@
 // ===== Setup =====
-const supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+const supabaseClient = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 const TMDB_IMG = "https://image.tmdb.org/t/p/w185";
 
 let allEntries = [];
@@ -40,8 +40,8 @@ authForm.addEventListener("submit", async (e) => {
   authSubmit.disabled = true;
 
   const { error } = isSignUpMode
-    ? await supabase.auth.signUp({ email, password })
-    : await supabase.auth.signInWithPassword({ email, password });
+    ? await supabaseClient.auth.signUp({ email, password })
+    : await supabaseClient.auth.signInWithPassword({ email, password });
 
   authSubmit.disabled = false;
 
@@ -65,11 +65,11 @@ authToggle.addEventListener("click", () => {
 });
 
 document.getElementById("logout").addEventListener("click", async () => {
-  await supabase.auth.signOut();
+  await supabaseClient.auth.signOut();
   showAuthScreen();
 });
 
-supabase.auth.onAuthStateChange((_event, session) => {
+supabaseClient.auth.onAuthStateChange((_event, session) => {
   if (session) {
     showAppScreen();
     loadEntries();
@@ -89,7 +89,7 @@ function showAppScreen() {
 
 // ===== Load + render entries =====
 async function loadEntries() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("diary_entries")
     .select("*")
     .order("created_at", { ascending: false });
@@ -327,7 +327,7 @@ function escapeHtml(str) {
 // ===== Save / delete =====
 entryForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const { data: { user } } = await supabase.auth.getUser();
+  const { data: { user } } = await supabaseClient.auth.getUser();
   if (!user) return;
 
   const id = document.getElementById("entry-id").value;
@@ -348,9 +348,9 @@ entryForm.addEventListener("submit", async (e) => {
 
   let error;
   if (id) {
-    ({ error } = await supabase.from("diary_entries").update(payload).eq("id", id));
+    ({ error } = await supabaseClient.from("diary_entries").update(payload).eq("id", id));
   } else {
-    ({ error } = await supabase.from("diary_entries").insert(payload));
+    ({ error } = await supabaseClient.from("diary_entries").insert(payload));
   }
 
   if (error) {
@@ -365,7 +365,7 @@ deleteBtn.addEventListener("click", async () => {
   const id = document.getElementById("entry-id").value;
   if (!id) return;
   if (!confirm("Видалити цей запис?")) return;
-  const { error } = await supabase.from("diary_entries").delete().eq("id", id);
+  const { error } = await supabaseClient.from("diary_entries").delete().eq("id", id);
   if (error) {
     alert("Не вдалося видалити: " + error.message);
     return;
@@ -376,7 +376,7 @@ deleteBtn.addEventListener("click", async () => {
 
 // ===== Init =====
 (async function init() {
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await supabaseClient.auth.getSession();
   if (session) {
     showAppScreen();
     loadEntries();
