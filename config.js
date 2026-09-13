@@ -6,5 +6,5 @@
 const CONFIG = {
   SUPABASE_URL: "https://hodsxnjmgpbuegbazens.supabase.co",
   SUPABASE_ANON_KEY: "YOUR-SUPABASE-ANON-KEY",
-  TMDB_API_KEY: "YOUR-TMDB-API-KEY"
+  TMDB_API_KEY: "6c4b1dd7cbbb4ae5a0bf79484e428b8e"
 };
