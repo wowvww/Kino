@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кінощоденник</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== AUTH SCREEN ===== -->
+<section id="auth-screen" class="screen">
+  <div class="ledger-cover">
+    <p class="stamp">приватний архів</p>
+    <h1 class="title-serif">Кінощоденник</h1>
+    <p class="subtitle">Записи про переглянуте. Тільки для тебе.</p>
+
+    <form id="auth-form" class="auth-form">
+      <label class="field">
+        <span>Пошта</span>
+        <input type="email" id="auth-email" required autocomplete="username">
+      </label>
+      <label class="field">
+        <span>Пароль</span>
+        <input type="password" id="auth-password" required autocomplete="current-password" minlength="6">
+      </label>
+      <p id="auth-error" class="auth-error" hidden></p>
+      <button type="submit" id="auth-submit" class="btn btn-amber">Увійти</button>
+      <button type="button" id="auth-toggle" class="btn-link">Немає акаунта? Створити</button>
+    </form>
+  </div>
+</section>
+
+<!-- ===== APP SCREEN ===== -->
+<section id="app-screen" class="screen" hidden>
+  <header class="app-header">
+    <h1 class="title-serif">Кінощоденник</h1>
+    <div class="header-actions">
+      <button id="open-add" class="btn btn-amber">+ Додати</button>
+      <button id="logout" class="btn-link">Вийти</button>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="segmented" id="status-filter">
+      <button class="seg-btn active" data-status="all">Усе</button>
+      <button class="seg-btn" data-status="watching">Дивлюся</button>
+      <button class="seg-btn" data-status="watched">Переглянуто</button>
+      <button class="seg-btn" data-status="planned">У планах</button>
+    </div>
+    <input type="text" id="search-own" class="search-own" placeholder="Пошук у своєму списку…">
+  </div>
+
+  <p id="empty-state" class="empty-state" hidden>
+    Поки що порожньо. Натисни «+ Додати», щоб внести перший фільм чи серіал.
+  </p>
+
+  <ul id="entries-list" class="entries-list"></ul>
+</section>
+
+<!-- ===== ADD / EDIT MODAL ===== -->
+<div id="modal-backdrop" class="modal-backdrop" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <h2 id="modal-title" class="title-serif">Новий запис</h2>
+      <button id="modal-close" class="icon-btn" aria-label="Закрити">✕</button>
+    </div>
+
+    <div id="search-step">
+      <label class="field">
+        <span>Пошук фільму чи серіалу</span>
+        <input type="text" id="tmdb-search" placeholder="Наприклад: Дюна">
+      </label>
+      <ul id="tmdb-results" class="tmdb-results"></ul>
+      <button id="skip-search" class="btn-link">Ввести назву вручну →</button>
+    </div>
+
+    <form id="entry-form" class="entry-form" hidden>
+      <div class="picked-summary" id="picked-summary"></div>
+
+      <label class="field">
+        <span>Назва</span>
+        <input type="text" id="entry-title" required>
+      </label>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Рік</span>
+          <input type="text" id="entry-year" inputmode="numeric" maxlength="4">
+        </label>
+        <label class="field">
+          <span>Тип</span>
+          <select id="entry-type">
+            <option value="movie">Фільм</option>
+            <option value="tv">Серіал</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="field-row">
+        <label class="field">
+          <span>Статус</span>
+          <select id="entry-status">
+            <option value="planned">У планах</option>
+            <option value="watching">Дивлюся</option>
+            <option value="watched">Переглянуто</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Оцінка (0–10)</span>
+          <input type="number" id="entry-rating" min="0" max="10" step="0.5">
+        </label>
+      </div>
+
+      <label class="field">
+        <span>Дата перегляду</span>
+        <input type="date" id="entry-date">
+      </label>
+
+      <label class="field">
+        <span>Нотатки</span>
+        <textarea id="entry-notes" rows="3" placeholder="Враження, думки, з ким дивився…"></textarea>
+      </label>
+
+      <input type="hidden" id="entry-id">
+      <input type="hidden" id="entry-tmdb-id">
+      <input type="hidden" id="entry-poster">
+
+      <div class="modal-actions">
+        <button type="button" id="delete-entry" class="btn-link danger" hidden>Видалити</button>
+        <button type="submit" class="btn btn-amber">Зберегти</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
