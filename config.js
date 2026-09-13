@@ -4,7 +4,7 @@
 // крім тебе (авторизованого), читати чи писати записи.
 
 const CONFIG = {
-  SUPABASE_URL: "https://YOUR-PROJECT.supabase.co",
+  SUPABASE_URL: "https://hodsxnjmgpbuegbazens.supabase.co",
   SUPABASE_ANON_KEY: "YOUR-SUPABASE-ANON-KEY",
   TMDB_API_KEY: "YOUR-TMDB-API-KEY"
 };
